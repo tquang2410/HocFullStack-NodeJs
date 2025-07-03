@@ -1,6 +1,8 @@
+require('dotenv').config();
 const User = require("../models/user");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const jwt = require('jsonwebtoken');
 const createUserService = async (name, email, password) => {
     try {
         // hash password here if needed
@@ -19,31 +21,43 @@ const createUserService = async (name, email, password) => {
         return null;
     }
 }
-const loginService = async ( email1, password) => {
+const loginService = async (email1, password) => {
     try {
-        // hash password here if needed
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
         const user = await User.findOne({ email: email1 });
-        if (user) {
-            const isMatchPassword = await bcrypt.compare(password, user.password);
-            if(!isMatchPassword){
-                return {
-                    EC: 2,
-                    EM: "Wrong email or password"
-                }
-            } else {
-                // create an access token
-                return "create an access"
-            }
-        } else {
+        if (!user) {
             return {
-                EC : 1,
+                EC: 1,
                 EM: "Wrong email or password"
             }
         }
-
-        return result;
-
+        const isMatchPassword = await bcrypt.compare(password, user.password);
+        if (!isMatchPassword) {
+            return {
+                EC: 2,
+                EM: "Wrong email or password"
+            }
+        }
+        // create an access token
+        const payload = {
+            name: user.name,
+            email: user.email,
+        };
+        const accessToken = jwt.sign(
+            payload,
+            process.env.JWT_SECRET,
+            {
+                expiresIn: process.env.JWT_EXPIRATION
+            }
+        );
+        return { accessToken,
+            user: {
+                name: user.name,
+                email: user.email,
+                role: user.role
+            },
+            EC: 0,
+            EM: "Login successfully"
+        };
     } catch (error) {
         console.log(error);
         return null;
