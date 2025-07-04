@@ -2,18 +2,10 @@ const express = require('express');
 const {createUser, handleLogin, getUser} = require("../controllers/userController");
 
 const routerAPI = express.Router();
-const delay = require('../config/middleware/delay');
-// const { getUsersAPI, postCreateUserAPI,
-//     putUpdateUserAPI, deleteUserAPI
-
-// } = require('../controllers/apiController')
-
-
-// routerAPI.get('/users', getUsersAPI);
-// routerAPI.post('/users', postCreateUserAPI);
-// routerAPI.put('/users', putUpdateUserAPI);
-// routerAPI.delete('/users', deleteUserAPI);
-routerAPI.all("*", delay)
+// const delay = require('../config/middleware/delay');
+const auth = require('../config/middleware/auth');
+// router gọi đến controller
+routerAPI.all("*", auth);
 routerAPI.get("/user", getUser);
 routerAPI.get('/', (req, res) => {
     return res.status(200).json('Welcome to the API')

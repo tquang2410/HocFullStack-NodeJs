@@ -1,4 +1,6 @@
 require('dotenv').config();
+
+// Service để xử lý logic nghiệp vụ, gọi model để trả về dữ liệu cho controller
 const User = require("../models/user");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;

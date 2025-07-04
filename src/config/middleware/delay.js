@@ -10,4 +10,4 @@ const delay = (req, res, next) => {
         next();
     }, 3000); // 1000 milliseconds = 1 second
 }
-module.exports = delay; //export default
+// module.exports = delay; //export default
