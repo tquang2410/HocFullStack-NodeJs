@@ -13,7 +13,11 @@ const auth = (req, res, next) => {
         // Kiểm tra token hợp lệ
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            // req.user = decoded; // Lưu thông tin người dùng vào req.user
+             req.user = {
+                name: decoded.name,
+                email: decoded.email,
+                 createdBy: "Wang"
+            }
 
         } catch (error) {
             return res.status(401).json({ message: 'Invalid token' });
